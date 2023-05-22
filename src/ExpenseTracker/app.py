@@ -6,6 +6,9 @@ from toga.style import Pack
 from toga.style.pack import COLUMN, ROW
 import httpx
 
+from ExpenseTracker.json_backend import load_json, save_json_file
+from ExpenseTracker.pages import HomePage, SettingsPage
+
 def greeting(name):
         if name:
             return f"Hello, {name}"
@@ -22,7 +25,10 @@ class ExpenseTrackerQian(toga.App):
         We then create a main window (with a name matching the app), and
         show the main window.
         """
-        main_box = toga.Box(style=Pack(direction=COLUMN))
+        self.home_screen = HomePage(self.switch_to_main)
+        self.settings_screen = SettingsPage(self.switch_to_main)
+
+        self.main_box = toga.Box(style=Pack(direction=COLUMN))
 
         name_label = toga.Label(
             "Your name: ",
@@ -40,11 +46,25 @@ class ExpenseTrackerQian(toga.App):
             style=Pack(padding=5)
         )
 
-        main_box.add(name_box)
-        main_box.add(button)
+        switch_to_home_button = toga.Button(
+            "Home",
+            on_press=self.switch_to_home,
+            style=Pack(padding=5)
+        )
+
+        switch_to_settings_button = toga.Button(
+            "Settings",
+            on_press=self.switch_to_settings,
+            style=Pack(padding=5)
+        )
+
+        self.main_box.add(name_box)
+        self.main_box.add(button)
+        self.main_box.add(switch_to_home_button)
+        self.main_box.add(switch_to_settings_button)
 
         self.main_window = toga.MainWindow(title=self.formal_name)
-        self.main_window.content = main_box
+        self.main_window.content = self.main_box
         self.main_window.show()
         
     async def say_hello(self, widget):
@@ -57,6 +77,15 @@ class ExpenseTrackerQian(toga.App):
             greeting(self.name_input.value),
             payload["body"],
         )
- 
+    
+    def switch_to_home(self, widget):
+        self.main_window.content = self.home_screen
+
+    def switch_to_settings(self, widget):
+        self.main_window.content = self.settings_screen
+    
+    def switch_to_main(self, widget):
+        self.main_window.content = self.main_box
+
 def main():
     return ExpenseTrackerQian()

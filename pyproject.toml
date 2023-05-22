@@ -23,6 +23,8 @@ test_sources = [
 
 requires = [
     "httpx",
+    "briefcase",
+    "beeware",
 ]
 test_requires = [
     "pytest",
