@@ -5,15 +5,25 @@ import toga
 from toga.style import Pack
 from toga.style.pack import COLUMN, ROW
 import httpx
+import os
 
 from ExpenseTracker.json_backend import load_json, save_json_file
 from ExpenseTracker.pages import HomePage, SettingsPage
 
-def greeting(name):
+initial_user_json = {
+    "name" : "",
+    "yearly_income" : "",
+    "company" : "",
+}
+def greeting(name, income="", company=""):
         if name:
-            return f"Hello, {name}"
+            initial_user_json["name"] = name
+            initial_user_json["yearly_income"] = income
+            initial_user_json["company"] = company
+            save_json_file('/Users/danielqian/Documents/ExpenseTracker/src/ExpenseTracker/data/user.json', initial_user_json)
+            return f"Saved the following information : {name}, {income}, {company}."
         else:
-            return "Hello, stranger"
+            return "Please input a Name"
 
 class ExpenseTrackerQian(toga.App):
 
@@ -28,54 +38,85 @@ class ExpenseTrackerQian(toga.App):
         self.home_screen = HomePage(self.switch_to_main)
         self.settings_screen = SettingsPage(self.switch_to_main)
 
-        self.main_box = toga.Box(style=Pack(direction=COLUMN))
+        self.main_box = toga.Box(style=Pack(direction=COLUMN, padding=10))
+        self.main_box.add(toga.Label('Expense Tracking', style=Pack(font_size=20, text_align='center')))
 
-        name_label = toga.Label(
-            "Your name: ",
-            style=Pack(padding=(0, 5))
-        )
-        self.name_input = toga.TextInput(style=Pack(flex=1))
-
-        name_box = toga.Box(style=Pack(direction=ROW, padding=5))
-        name_box.add(name_label)
-        name_box.add(self.name_input)
-
+        info_box = toga.Box(style=Pack(direction=ROW, padding=5))
         button = toga.Button(
-            "Say Hello!",
-            on_press=self.say_hello,
-            style=Pack(padding=5)
+            "Submit",
+            on_press=self.submit_info,
+            style=Pack(padding=5, width=100)
         )
+
+        if os.path.exists('/Users/danielqian/Documents/ExpenseTracker/src/ExpenseTracker/data/user.json'):
+            current_user = load_json('/Users/danielqian/Documents/ExpenseTracker/src/ExpenseTracker/data/user.json')
+            name_label = toga.Label(
+                "Hello " + current_user["name"] + "!",
+                style=Pack(padding=(0, 5), width=0.5, alignment='center')
+            )
+            info_box.add(name_label)
+        else:
+            main_label = toga.Label(
+                "Please input some basic data below : ",
+                style=Pack(padding=(0, 5), width=0.5, alignment='center')
+            )
+
+            name_label = toga.Label(
+                "Name : ",
+                style=Pack(padding=(0, 5), width=0.5, alignment='center')
+            )
+            self.name_input = toga.TextInput(style=Pack(flex=1))
+
+            income_label = toga.Label(
+                "Yearly Income : ",
+                style=Pack(padding=(0, 5), width=0.5, alignment='center')
+            )
+            self.income_input = toga.TextInput(style=Pack(flex=1))
+
+            company_label = toga.Label(
+                "Company : ",
+                style=Pack(padding=(0, 5), width=0.5, alignment='center')
+            )
+            self.company_input = toga.TextInput(style=Pack(flex=1))
+
+            info_box.add(name_label)
+            info_box.add(self.name_input)
+            info_box.add(income_label)
+            info_box.add(self.income_input)
+            info_box.add(company_label)
+            info_box.add(self.company_input)
+            info_box.add(button)
 
         switch_to_home_button = toga.Button(
             "Home",
             on_press=self.switch_to_home,
-            style=Pack(padding=5)
+            style=Pack(padding=5, width=100)
         )
 
         switch_to_settings_button = toga.Button(
             "Settings",
             on_press=self.switch_to_settings,
-            style=Pack(padding=5)
+            style=Pack(padding=5, width=100)
         )
 
-        self.main_box.add(name_box)
-        self.main_box.add(button)
+        self.main_box.add(info_box)
         self.main_box.add(switch_to_home_button)
         self.main_box.add(switch_to_settings_button)
+        self.main_box.style.update(alignment='center')
 
         self.main_window = toga.MainWindow(title=self.formal_name)
         self.main_window.content = self.main_box
         self.main_window.show()
         
-    async def say_hello(self, widget):
+    async def submit_info(self, widget):
         async with httpx.AsyncClient() as client:
             response = await client.get("https://jsonplaceholder.typicode.com/posts/42")
 
         payload = response.json()
 
         self.main_window.info_dialog(
-            greeting(self.name_input.value),
-            payload["body"],
+            greeting(self.name_input.value, self.income_input.value, self.company_input.value),
+            "Welcome to Expense Tracking",
         )
     
     def switch_to_home(self, widget):
