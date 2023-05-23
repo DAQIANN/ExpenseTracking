@@ -7,6 +7,8 @@ consider** `becoming a financial member of BeeWare`_.
 
 Allowing for tracking of expenses
 
+Main goal as of right now is to help myself track expenses in a way fine-tuned to certain needs.
+
 .. _`Briefcase`: https://briefcase.readthedocs.io/
 .. _`The BeeWare Project`: https://beeware.org/
 .. _`becoming a financial member of BeeWare`: https://beeware.org/contributing/membership
