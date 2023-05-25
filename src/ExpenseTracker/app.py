@@ -10,6 +10,8 @@ import os
 from ExpenseTracker.json_backend import load_json, save_json_file
 from ExpenseTracker.pages import HomePage, SettingsPage
 
+from ExpenseTracker.common import create_submit_button
+
 initial_user_json = {
     "name" : "",
     "yearly_income" : "",
@@ -35,17 +37,23 @@ class ExpenseTrackerQian(toga.App):
         We then create a main window (with a name matching the app), and
         show the main window.
         """
-        self.home_screen = HomePage(self.switch_to_main)
-        self.settings_screen = SettingsPage(self.switch_to_main)
 
-        self.main_box = toga.Box(style=Pack(direction=COLUMN, padding=10))
-        self.main_box.add(toga.Label('Expense Tracking', style=Pack(font_size=20, text_align='center')))
+        self.main_box = self.make_main_box()
+        self.main_window = toga.MainWindow(title=self.formal_name)
+        self.main_window.content = self.main_box
+        self.continue_screen = HomePage(self.switch_to_main, self.main_window)
+        self.settings_screen = SettingsPage(self.switch_to_main)
+        self.main_window.show()
+    
+    def make_main_box(self):
+        main_box = toga.Box(style=Pack(direction=COLUMN, padding=10))
+        main_box.add(toga.Label('Expense Tracking', style=Pack(font_size=20, text_align='center')))
 
         info_box = toga.Box(style=Pack(direction=ROW, padding=5))
-        button = toga.Button(
-            "Submit",
-            on_press=self.submit_info,
-            style=Pack(padding=5, width=100)
+        button = create_submit_button("Submit", self.submit_info)
+
+        next_button = toga.Button(
+            "Next"
         )
 
         if os.path.exists('/Users/danielqian/Documents/ExpenseTracker/src/ExpenseTracker/data/user.json'):
@@ -87,9 +95,9 @@ class ExpenseTrackerQian(toga.App):
             info_box.add(self.company_input)
             info_box.add(button)
 
-        switch_to_home_button = toga.Button(
-            "Home",
-            on_press=self.switch_to_home,
+        switch_to_continue_button = toga.Button(
+            "Continue",
+            on_press=self.switch_to_continue,
             style=Pack(padding=5, width=100)
         )
 
@@ -99,28 +107,25 @@ class ExpenseTrackerQian(toga.App):
             style=Pack(padding=5, width=100)
         )
 
-        self.main_box.add(info_box)
-        self.main_box.add(switch_to_home_button)
-        self.main_box.add(switch_to_settings_button)
-        self.main_box.style.update(alignment='center')
+        main_box.add(info_box)
+        main_box.add(switch_to_continue_button)
+        main_box.add(switch_to_settings_button)
+        main_box.style.update(alignment='center')
+        return main_box
 
-        self.main_window = toga.MainWindow(title=self.formal_name)
-        self.main_window.content = self.main_box
-        self.main_window.show()
-        
-    async def submit_info(self, widget):
-        async with httpx.AsyncClient() as client:
-            response = await client.get("https://jsonplaceholder.typicode.com/posts/42")
+    def submit_info(self, widget):
+        # async with httpx.AsyncClient() as client:
+        #     response = await client.get("https://jsonplaceholder.typicode.com/posts/42")
 
-        payload = response.json()
+        # payload = response.json()
 
         self.main_window.info_dialog(
             greeting(self.name_input.value, self.income_input.value, self.company_input.value),
             "Welcome to Expense Tracking",
         )
     
-    def switch_to_home(self, widget):
-        self.main_window.content = self.home_screen
+    def switch_to_continue(self, widget):
+        self.main_window.content = self.continue_screen
 
     def switch_to_settings(self, widget):
         self.main_window.content = self.settings_screen
