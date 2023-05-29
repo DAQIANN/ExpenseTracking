@@ -3,9 +3,16 @@ from toga.style import Pack
 from toga.style.pack import COLUMN, ROW
 from toga.constants import CENTER
 import os
+from datetime import date
 
 from ExpenseTracker.json_backend import load_json, save_json_file
 from ExpenseTracker.common import create_submit_button
+
+user_entry = {
+    "Cost" : "",
+    "Type" : "",
+    "Date" : ""
+}
 
 class HomePage(toga.Box):
     def __init__(self, switch_to_main, main_window):
@@ -15,7 +22,7 @@ class HomePage(toga.Box):
         self.main_window = main_window
 
         box = toga.Box(style=Pack(direction=COLUMN, padding=10))
-        box.add(toga.Label('Welcome to Expense Tracker!', style=Pack(font_size=20, text_align='center')))
+        box.add(toga.Label('Start tracking your expenses!', style=Pack(font_size=20, text_align='center')))
 
         bottom_right_box = toga.Box(style=Pack(direction='row', alignment='right'))
         spacer = toga.Box(style=Pack(flex=1))
@@ -53,7 +60,20 @@ class HomePage(toga.Box):
 
         submit_button = create_submit_button("Submit", self.submit_info)
 
+        year_selection = toga.Selection(items=[str(year) for year in range(2000, 2051)], style=Pack(flex=1))
+        year_selection.on_select = self.on_date_selected
+
+        month_selection = toga.Selection(items=['January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'], style=Pack(flex=1))
+        month_selection.on_select = self.on_date_selected
+
+        day_selection = toga.Selection(items=[str(day) for day in range(1, 32)], style=Pack(flex=1))
+        day_selection.on_select = self.on_date_selected
+
         box.add(top_box)
+        box.add(year_selection)
+        box.add(month_selection)
+        box.add(day_selection)
         box.add(submit_button)
         box.add(back_button)
         box.add(bottom_right_box)
@@ -64,6 +84,10 @@ class HomePage(toga.Box):
             "TEST",
             "Welcome to Expense Tracking",
         )
+    
+    def on_date_selected(self, widget):
+        date = widget.value
+        print("Selected date: ", type(date), date)
 
 class SettingsPage(toga.Box):
     def __init__(self, switch_to_main):
