@@ -9,11 +9,6 @@ from ExpenseTracker.json_backend import load_json, save_json_file
 from ExpenseTracker.common import create_submit_button
 from ExpenseTracker.transaction import Transaction
 
-user_entry = {
-    "Cost" : "",
-    "Type" : "",
-}
-
 MONTHS_CONVERSION = {
     'January' : 1,
     'February' : 2,
@@ -50,8 +45,7 @@ class HomePage(toga.Box):
 
         top_box = toga.Box(
             toga.Label(
-                "Please observe a sample cost input below : ",
-                # style=Pack(padding=(0, 5), width=0.5, alignment='center')
+                "Please observe the inputs below : ",
             ),
             style=Pack(direction=COLUMN, padding=10)
         )
@@ -81,6 +75,12 @@ class HomePage(toga.Box):
 
         submit_button = create_submit_button("Submit", self.submit_info)
 
+        switch_to_continue_button = toga.Button(
+            "Continue",
+            on_press=self.switch_to_continue,
+            style=Pack(padding=5, width=100)
+        )
+    
         box.add(top_box)
         box.add(cost_label)
         box.add(self.cost_input)
@@ -89,6 +89,7 @@ class HomePage(toga.Box):
         box.add(month_selection)
         box.add(day_selection)
         box.add(submit_button)
+        box.add(switch_to_continue_button)
         box.add(back_button)
         box.add(bottom_right_box)
         self.add(box)
@@ -105,8 +106,10 @@ class HomePage(toga.Box):
             print(transact_date_key)
             transaction = Transaction(self.transact_type, float(self.cost_input.value))
 
-            if open('/Users/danielqian/Documents/ExpenseTracker/src/ExpenseTracker/data/user_data.json').read().strip() == '':
+            test_document = open('/Users/danielqian/Documents/ExpenseTracker/src/ExpenseTracker/data/user_data.json')
+            if test_document.read().strip() == '':
                 transaction_dictionary = {}
+                test_document.close()
             else:
                 transaction_dictionary = load_json('/Users/danielqian/Documents/ExpenseTracker/src/ExpenseTracker/data/user_data.json')
             
@@ -131,6 +134,10 @@ class HomePage(toga.Box):
 
     def on_transact_selected(self, widget):
         self.transact_type = widget.value
+    
+    def switch_to_continue(self, widget):
+        self.view_screen = ViewPage(self.switch_to_main, self.main_window, self)
+        self.main_window.content = self.view_screen
 
 class SettingsPage(toga.Box):
     def __init__(self, switch_to_main):
@@ -147,3 +154,99 @@ class SettingsPage(toga.Box):
             style=Pack(padding=5)
         )
         self.add(back_button)
+
+# this page is meant to view transactions from a certain time to another time and organized in the different categories available
+class ViewPage(toga.Box):
+    def __init__(self, switch_to_main, main_window, home_window):
+        super().__init__()
+
+        self.box = toga.Box(style=Pack(direction=COLUMN, padding=10))
+        self.box.add(toga.Label('View your Expenses!', style=Pack(font_size=20, text_align='center')))
+
+        self.switch_to_main = switch_to_main
+        self.main_window = main_window
+        self.home_window = home_window
+
+        back_button = toga.Button(
+            'Back',
+            on_press=self.switch_to_home,
+            style=Pack(padding=5)
+        )
+
+        confirm_button = toga.Button(
+            'Confirm',
+            on_press=self.on_confirm_click,
+            style=Pack(padding=5)
+        )
+
+        start_date_label = toga.Label('Select a Start Date : ', style=Pack(flex=1, padding=5))
+
+        start_year_selection = toga.Selection(items=['None'] + [str(year) for year in range(2000, 2051)], style=Pack(flex=1, padding=5))
+        start_year_selection.on_select = self.on_start_year_selected
+        self.start_year = 'None'
+
+        start_month_selection = toga.Selection(items=['None', 'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'], style=Pack(flex=1, padding=5))
+        start_month_selection.on_select = self.on_start_month_selected
+        self.start_month = 'None'
+
+        start_day_selection = toga.Selection(items=['None'] + [str(day) for day in range(1, 32)], style=Pack(flex=1, padding=5))
+        start_day_selection.on_select = self.on_start_day_selected
+        self.start_day = 'None'
+
+        start_input_box = toga.Box(style=Pack(direction=ROW))
+        start_input_box.add(start_year_selection)
+        start_input_box.add(start_month_selection)
+        start_input_box.add(start_day_selection)
+
+        end_date_label = toga.Label('Select an End Date : ', style=Pack(flex=1, padding=5))
+
+        end_year_selection = toga.Selection(items=['None'] + [str(year) for year in range(2000, 2051)], style=Pack(flex=1, padding=5))
+        end_year_selection.on_select = self.on_end_year_selected
+        self.end_year = 'None'
+
+        end_month_selection = toga.Selection(items=['None', 'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'], style=Pack(flex=1, padding=5))
+        end_month_selection.on_select = self.on_end_month_selected
+        self.end_month = 'None'
+
+        end_day_selection = toga.Selection(items=['None'] + [str(day) for day in range(1, 32)], style=Pack(flex=1, padding=5))
+        end_day_selection.on_select = self.on_end_day_selected
+        self.end_day = 'None'
+
+        end_input_box = toga.Box(style=Pack(direction=ROW))
+        end_input_box.add(end_year_selection)
+        end_input_box.add(end_month_selection)
+        end_input_box.add(end_day_selection)
+
+        self.box.add(start_date_label)
+        self.box.add(start_input_box)
+        self.box.add(end_date_label)
+        self.box.add(end_input_box)
+        self.box.add(back_button)
+        self.box.style.update(alignment='center')
+        self.add(self.box)
+        
+    def switch_to_home(self, widget):
+        self.main_window.content = self.home_window
+    
+    def on_start_year_selected(self, widget):
+        self.start_year = widget.value
+    
+    def on_start_month_selected(self, widget):
+        self.start_month = widget.value
+    
+    def on_start_day_selected(self, widget):
+        self.start_day = widget.value
+
+    def on_end_year_selected(self, widget):
+        self.end_year = widget.value
+    
+    def on_end_month_selected(self, widget):
+        self.end_month = widget.value
+    
+    def on_end_day_selected(self, widget):
+        self.end_day = widget.value
+    
+    def on_confirm_click(self, widget):
+        return

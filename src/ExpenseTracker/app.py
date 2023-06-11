@@ -2,6 +2,7 @@
 Allowing for tracking of expenses
 """
 import toga
+import json
 from toga.style import Pack
 from toga.style.pack import COLUMN, ROW
 import httpx
@@ -17,6 +18,7 @@ initial_user_json = {
     "yearly_income" : "",
     "company" : "",
 }
+
 def greeting(name, income="", company=""):
         if name:
             initial_user_json["name"] = name
@@ -37,7 +39,6 @@ class ExpenseTrackerQian(toga.App):
         We then create a main window (with a name matching the app), and
         show the main window.
         """
-
         self.main_box = self.make_main_box()
         self.main_window = toga.MainWindow(title=self.formal_name)
         self.main_window.content = self.main_box
