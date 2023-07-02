@@ -181,7 +181,7 @@ class ViewPage(toga.Box):
 
         start_date_label = toga.Label('Select a Start Date : ', style=Pack(flex=1, padding=5))
 
-        start_year_selection = toga.Selection(items=['None'] + [str(year) for year in range(2000, 2051)], style=Pack(flex=1, padding=5))
+        start_year_selection = toga.Selection(items=['None'] + [str(year) for year in range(2000, 2030)], style=Pack(flex=1, padding=5))
         start_year_selection.on_select = self.on_start_year_selected
         self.start_year = 'None'
 
@@ -201,7 +201,7 @@ class ViewPage(toga.Box):
 
         end_date_label = toga.Label('Select an End Date : ', style=Pack(flex=1, padding=5))
 
-        end_year_selection = toga.Selection(items=['None'] + [str(year) for year in range(2000, 2051)], style=Pack(flex=1, padding=5))
+        end_year_selection = toga.Selection(items=['None'] + [str(year) for year in range(2000, 2030)], style=Pack(flex=1, padding=5))
         end_year_selection.on_select = self.on_end_year_selected
         self.end_year = 'None'
 
@@ -223,6 +223,7 @@ class ViewPage(toga.Box):
         self.box.add(start_input_box)
         self.box.add(end_date_label)
         self.box.add(end_input_box)
+        self.box.add(confirm_button)
         self.box.add(back_button)
         self.box.style.update(alignment='center')
         self.add(self.box)
@@ -249,4 +250,56 @@ class ViewPage(toga.Box):
         self.end_day = widget.value
     
     def on_confirm_click(self, widget):
-        return
+        if self.start_year == 'None' or self.end_year == 'None' or self.start_month == 'None' or self.end_month == 'None' or self.start_day == 'None' or self.end_day == 'None':
+            self.main_window.info_dialog(
+                "Error",
+                "Can not have None Values. Please input valid dates.",
+            )
+            return
+        elif int(self.start_year) > int(self.end_year):
+            self.main_window.info_dialog(
+                "Error",
+                "The Start Year can not be later than the End Year. Please correct the dates.",
+            )
+            return
+        start = self.start_year + '-' + str(MONTHS_CONVERSION[self.start_month]) + '-' + self.start_day
+        end = self.end_year + '-' + str(MONTHS_CONVERSION[self.end_month]) + '-' + self.end_day
+        self.stats_screen = StatsPage(self.main_window, self, start, end)
+        self.main_window.content = self.stats_screen
+
+class StatsPage(toga.Box):
+    def __init__(self, main_window, view_window, start_date, end_date):
+        super().__init__()
+
+        self.box = toga.Box(style=Pack(direction=COLUMN, padding=10))
+        self.box.add(toga.Label('View your Expenses!', style=Pack(font_size=20, text_align='center')))
+
+        self.main_window = main_window
+        self.view_window = view_window
+
+        back_button = toga.Button(
+            'Back',
+            on_press=self.switch_to_view,
+            style=Pack(padding=5)
+        )
+        
+        start = datetime.strptime(start_date, "%Y-%m-%d")
+        end = datetime.strptime(end_date, "%Y-%m-%d")
+        cost_data = load_json('/Users/danielqian/Documents/ExpenseTracker/src/ExpenseTracker/data/user_data.json')
+        data_type = {}
+        for key in cost_data:
+            current_date = datetime.strptime(key, "%Y-%m-%d")
+            if start <= current_date <= end:
+                for i in cost_data[key]:
+                    if i.get_transaction_type() not in data_type:
+                        data_type[i.get_transaction_type()] = float(0)
+                    data_type[i.get_transaction_type()] += i.get_cost()
+
+        for key in data_type:
+            self.box.add(toga.Label(key + " : " + str(data_type[key]), style=Pack(font_size=15, text_align='center')))
+        self.box.add(back_button)
+        self.box.style.update(alignment='center')
+        self.add(self.box)
+
+    def switch_to_view(self, widget):
+        self.main_window.content = self.view_window
