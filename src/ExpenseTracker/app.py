@@ -7,9 +7,11 @@ from toga.style import Pack
 from toga.style.pack import COLUMN, ROW
 import httpx
 import os
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
 
 from ExpenseTracker.json_backend import load_json, save_json_file
-from ExpenseTracker.pages import HomePage, SettingsPage
+from ExpenseTracker.pages import HomePage, ViewPage
 
 from ExpenseTracker.common import create_submit_button
 
@@ -43,7 +45,7 @@ class ExpenseTrackerQian(toga.App):
         self.main_window = toga.MainWindow(title=self.formal_name)
         self.main_window.content = self.main_box
         self.continue_screen = HomePage(self.switch_to_main, self.main_window)
-        self.settings_screen = SettingsPage(self.switch_to_main)
+        self.data_screen = ViewPage(self.switch_to_main, self.main_window)
         self.main_window.show()
     
     def make_main_box(self):
@@ -97,29 +99,24 @@ class ExpenseTrackerQian(toga.App):
             info_box.add(button)
 
         switch_to_continue_button = toga.Button(
-            "Continue",
+            "Input Expenses",
             on_press=self.switch_to_continue,
-            style=Pack(padding=5, width=100)
+            style=Pack(padding=5, width=150)
         )
 
-        switch_to_settings_button = toga.Button(
-            "Settings",
-            on_press=self.switch_to_settings,
-            style=Pack(padding=5, width=100)
+        switch_to_data_button = toga.Button(
+            "View Expenses",
+            on_press=self.switch_to_data,
+            style=Pack(padding=5, width=150)
         )
 
         main_box.add(info_box)
         main_box.add(switch_to_continue_button)
-        main_box.add(switch_to_settings_button)
+        main_box.add(switch_to_data_button)
         main_box.style.update(alignment='center')
         return main_box
 
     def submit_info(self, widget):
-        # async with httpx.AsyncClient() as client:
-        #     response = await client.get("https://jsonplaceholder.typicode.com/posts/42")
-
-        # payload = response.json()
-
         self.main_window.info_dialog(
             greeting(self.name_input.value, self.income_input.value, self.company_input.value),
             "Welcome to Expense Tracking",
@@ -127,9 +124,9 @@ class ExpenseTrackerQian(toga.App):
     
     def switch_to_continue(self, widget):
         self.main_window.content = self.continue_screen
-
-    def switch_to_settings(self, widget):
-        self.main_window.content = self.settings_screen
+    
+    def switch_to_data(self, widget):
+        self.main_window.content = self.data_screen
     
     def switch_to_main(self, widget):
         self.main_window.content = self.main_box

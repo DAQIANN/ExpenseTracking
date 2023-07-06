@@ -136,28 +136,12 @@ class HomePage(toga.Box):
         self.transact_type = widget.value
     
     def switch_to_continue(self, widget):
-        self.view_screen = ViewPage(self.switch_to_main, self.main_window, self)
+        self.view_screen = ViewPage(self.switch_to_main, self.main_window)
         self.main_window.content = self.view_screen
-
-class SettingsPage(toga.Box):
-    def __init__(self, switch_to_main):
-        super().__init__()
-
-        self.label = toga.Label("Settings Screen")
-        self.add(self.label)
-
-        self.switch_to_main = switch_to_main
-
-        back_button = toga.Button(
-            'Back',
-            on_press=self.switch_to_main,
-            style=Pack(padding=5)
-        )
-        self.add(back_button)
 
 # this page is meant to view transactions from a certain time to another time and organized in the different categories available
 class ViewPage(toga.Box):
-    def __init__(self, switch_to_main, main_window, home_window):
+    def __init__(self, switch_to_main, main_window):
         super().__init__()
 
         self.box = toga.Box(style=Pack(direction=COLUMN, padding=10))
@@ -165,11 +149,10 @@ class ViewPage(toga.Box):
 
         self.switch_to_main = switch_to_main
         self.main_window = main_window
-        self.home_window = home_window
 
         back_button = toga.Button(
             'Back',
-            on_press=self.switch_to_home,
+            on_press=self.switch_to_main,
             style=Pack(padding=5)
         )
 
@@ -227,9 +210,6 @@ class ViewPage(toga.Box):
         self.box.add(back_button)
         self.box.style.update(alignment='center')
         self.add(self.box)
-        
-    def switch_to_home(self, widget):
-        self.main_window.content = self.home_window
     
     def on_start_year_selected(self, widget):
         self.start_year = widget.value
