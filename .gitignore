@@ -63,3 +63,5 @@ logs/
 
 data/
 *user*
+*credentials*
+*token.json*
