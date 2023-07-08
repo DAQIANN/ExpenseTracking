@@ -15,6 +15,8 @@ from ExpenseTracker.pages import HomePage, ViewPage
 
 from ExpenseTracker.common import create_submit_button
 
+from ExpenseTracker.constants import FILE_CONSTANTS
+
 initial_user_json = {
     "name" : "",
     "yearly_income" : "",
@@ -26,7 +28,7 @@ def greeting(name, income="", company=""):
             initial_user_json["name"] = name
             initial_user_json["yearly_income"] = income
             initial_user_json["company"] = company
-            save_json_file('/Users/danielqian/Documents/ExpenseTracker/src/ExpenseTracker/data/user.json', initial_user_json)
+            save_json_file(FILE_CONSTANTS["User"], initial_user_json)
             return f"Saved the following information : {name}, {income}, {company}."
         else:
             return "Please input a Name"
@@ -34,13 +36,6 @@ def greeting(name, income="", company=""):
 class ExpenseTrackerQian(toga.App):
 
     def startup(self):
-        """
-        Construct and show the Toga application.
-
-        Usually, you would add your application to a main content box.
-        We then create a main window (with a name matching the app), and
-        show the main window.
-        """
         self.main_box = self.make_main_box()
         self.main_window = toga.MainWindow(title=self.formal_name)
         self.main_window.content = self.main_box
@@ -59,8 +54,8 @@ class ExpenseTrackerQian(toga.App):
             "Next"
         )
 
-        if os.path.exists('/Users/danielqian/Documents/ExpenseTracker/src/ExpenseTracker/data/user.json'):
-            current_user = load_json('/Users/danielqian/Documents/ExpenseTracker/src/ExpenseTracker/data/user.json')
+        if os.path.exists(FILE_CONSTANTS["User"]):
+            current_user = load_json(FILE_CONSTANTS["User"])
             name_label = toga.Label(
                 "Hello " + current_user["name"] + "!",
                 style=Pack(padding=(0, 5), width=0.5, alignment='center')

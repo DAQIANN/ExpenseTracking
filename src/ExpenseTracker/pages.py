@@ -8,21 +8,7 @@ from datetime import timedelta, datetime
 from ExpenseTracker.json_backend import load_json, save_json_file
 from ExpenseTracker.common import create_submit_button
 from ExpenseTracker.transaction import Transaction
-
-MONTHS_CONVERSION = {
-    'January' : 1,
-    'February' : 2,
-    'March' : 3,
-    'April' : 4,
-    'May' : 5,
-    'June' : 6,
-    'July' : 7,
-    'August' : 8,
-    'September' : 9,
-    'October' : 10,
-    'November' : 11,
-    'December' : 12,
-}
+from ExpenseTracker.constants import FILE_CONSTANTS, MONTHS_CONVERSION
 
 class HomePage(toga.Box):
     def __init__(self, switch_to_main, main_window):
@@ -106,18 +92,18 @@ class HomePage(toga.Box):
             print(transact_date_key)
             transaction = Transaction(self.transact_type, float(self.cost_input.value))
 
-            test_document = open('/Users/danielqian/Documents/ExpenseTracker/src/ExpenseTracker/data/user_data.json')
+            test_document = open(FILE_CONSTANTS["User_Data"])
             if test_document.read().strip() == '':
                 transaction_dictionary = {}
                 test_document.close()
             else:
-                transaction_dictionary = load_json('/Users/danielqian/Documents/ExpenseTracker/src/ExpenseTracker/data/user_data.json')
+                transaction_dictionary = load_json(FILE_CONSTANTS["User_Data"])
             
             if transact_date_key not in transaction_dictionary:
                 transaction_dictionary[transact_date_key] = []
             
             transaction_dictionary[transact_date_key].append(transaction)
-            save_json_file('/Users/danielqian/Documents/ExpenseTracker/src/ExpenseTracker/data/user_data.json', transaction_dictionary)
+            save_json_file(FILE_CONSTANTS["User_Data"], transaction_dictionary)
             self.main_window.info_dialog(
                 "Expense Tracker",
                 "Your Transaction Information has been Tracked",
@@ -265,7 +251,7 @@ class StatsPage(toga.Box):
         
         start = datetime.strptime(start_date, "%Y-%m-%d")
         end = datetime.strptime(end_date, "%Y-%m-%d")
-        cost_data = load_json('/Users/danielqian/Documents/ExpenseTracker/src/ExpenseTracker/data/user_data.json')
+        cost_data = load_json(FILE_CONSTANTS["User_Data"])
         data_type = {}
         for key in cost_data:
             current_date = datetime.strptime(key, "%Y-%m-%d")
