@@ -62,7 +62,7 @@ class HomePage(toga.Box):
         submit_button = create_submit_button("Submit", self.submit_info)
 
         switch_to_continue_button = toga.Button(
-            "Continue",
+            "Continue to View Expenses",
             on_press=self.switch_to_continue,
             style=Pack(padding=5, width=100)
         )
@@ -137,7 +137,7 @@ class ViewPage(toga.Box):
         self.main_window = main_window
 
         back_button = toga.Button(
-            'Back',
+            'Back to Main Menu',
             on_press=self.switch_to_main,
             style=Pack(padding=5)
         )
@@ -196,7 +196,7 @@ class ViewPage(toga.Box):
         self.box.add(back_button)
         self.box.style.update(alignment='center')
         self.add(self.box)
-    
+
     def on_start_year_selected(self, widget):
         self.start_year = widget.value
     
@@ -252,7 +252,7 @@ class StatsPage(toga.Box):
         start = datetime.strptime(start_date, "%Y-%m-%d")
         end = datetime.strptime(end_date, "%Y-%m-%d")
         cost_data = load_json(FILE_CONSTANTS["User_Data"])
-        data_type = {}
+        data_type = {"Total" : float(0)}
         for key in cost_data:
             current_date = datetime.strptime(key, "%Y-%m-%d")
             if start <= current_date <= end:
@@ -260,9 +260,10 @@ class StatsPage(toga.Box):
                     if i.get_transaction_type() not in data_type:
                         data_type[i.get_transaction_type()] = float(0)
                     data_type[i.get_transaction_type()] += i.get_cost()
+                    data_type["Total"] += i.get_cost()
 
         for key in data_type:
-            self.box.add(toga.Label(key + " : " + str(data_type[key]), style=Pack(font_size=15, text_align='center')))
+            self.box.add(toga.Label(key + " : " + str(round(data_type[key], 2)), style=Pack(font_size=15, text_align='center')))
         self.box.add(back_button)
         self.box.style.update(alignment='center')
         self.add(self.box)
