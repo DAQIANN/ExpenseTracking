@@ -7,7 +7,8 @@ consider** `becoming a financial member of BeeWare`_.
 
 Allowing for tracking of expenses
 
-Main goal as of right now is to help myself track expenses in a way fine-tuned to certain needs.
+Many standard finanicial institutions have applications to help track the charges that a person puts on their account. Unfortunately, I have found them to be rather stiff in what they allow to be tracked.
+Most charges are self-classified and costs can only be viewed within certain periods of time they deem as the right ranges. Therefore, I decided to create a more self-controlled way of seeing and inputting charges to better manage one's expenses.
 
 .. _`Briefcase`: https://briefcase.readthedocs.io/
 .. _`The BeeWare Project`: https://beeware.org/
