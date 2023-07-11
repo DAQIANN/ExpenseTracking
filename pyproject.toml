@@ -22,10 +22,8 @@ test_sources = [
 ]
 
 requires = [
-    "httpx",
-    "beeware",
-    "pydrive",
 ]
+
 test_requires = [
     "pytest",
 ]

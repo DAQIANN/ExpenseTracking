@@ -24,7 +24,7 @@ class HomePage(toga.Box):
         spacer = toga.Box(style=Pack(flex=1))
         bottom_right_box.add(spacer)
         back_button = toga.Button(
-            'Back',
+            'Back to Main Menu',
             on_press=self.switch_to_main,
             style=Pack(padding=5)
         )
@@ -38,23 +38,39 @@ class HomePage(toga.Box):
 
         cost_label = toga.Label(
             "Cost : ",
-            style=Pack(padding=(0, 5), width=0.5, alignment='center')
+            style=Pack(padding=(0, 5), width=100, alignment='center')
         )
         self.cost_input = toga.TextInput(style=Pack(flex=1))
 
+        transaction_label = toga.Label(
+            "Transaction Type : ",
+            style=Pack(padding=(0, 5), width=0.5, alignment='center')
+        )
         transact_selection = toga.Selection(items=['None', 'Travel', 'Online Shopping', 'In-Store Shopping', 'Dining', 'Groceries'], style=Pack(flex=1, padding=5))
         transact_selection.on_select = self.on_transact_selected
         self.transact_type = 'None'
 
+        year_label = toga.Label(
+            "Year : ",
+            style=Pack(padding=(0, 5), width=0.5, alignment='center')
+        )
         year_selection = toga.Selection(items=['None'] + [str(year) for year in range(2000, 2051)], style=Pack(flex=1, padding=5))
         year_selection.on_select = self.on_year_selected
         self.year = 'None'
 
+        month_label = toga.Label(
+            "Month : ",
+            style=Pack(padding=(0, 5), width=0.5, alignment='center')
+        )
         month_selection = toga.Selection(items=['None', 'January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'], style=Pack(flex=1, padding=5))
         month_selection.on_select = self.on_month_selected
         self.month = 'None'
-
+        
+        day_label = toga.Label(
+            "Day : ",
+            style=Pack(padding=(0, 5), width=0.5, alignment='center')
+        )
         day_selection = toga.Selection(items=['None'] + [str(day) for day in range(1, 32)], style=Pack(flex=1, padding=5))
         day_selection.on_select = self.on_day_selected
         self.day = 'None'
@@ -64,15 +80,19 @@ class HomePage(toga.Box):
         switch_to_continue_button = toga.Button(
             "Continue to View Expenses",
             on_press=self.switch_to_continue,
-            style=Pack(padding=5, width=100)
+            style=Pack(padding=5, width=180)
         )
     
         box.add(top_box)
         box.add(cost_label)
         box.add(self.cost_input)
+        box.add(transaction_label)
         box.add(transact_selection)
+        box.add(year_label)
         box.add(year_selection)
+        box.add(month_label)
         box.add(month_selection)
+        box.add(day_label)
         box.add(day_selection)
         box.add(submit_button)
         box.add(switch_to_continue_button)

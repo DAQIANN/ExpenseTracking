@@ -5,10 +5,7 @@ import toga
 import json
 from toga.style import Pack
 from toga.style.pack import COLUMN, ROW
-import httpx
 import os
-from pydrive.auth import GoogleAuth
-from pydrive.drive import GoogleDrive
 
 from ExpenseTracker.json_backend import load_json, save_json_file
 from ExpenseTracker.pages import HomePage, ViewPage
@@ -45,7 +42,7 @@ class ExpenseTrackerQian(toga.App):
     
     def make_main_box(self):
         main_box = toga.Box(style=Pack(direction=COLUMN, padding=10))
-        main_box.add(toga.Label('Expense Tracking', style=Pack(font_size=20, text_align='center')))
+        main_box.add(toga.Label('Expense Tracking', style=Pack(font_size=20, text_align='left')))
 
         info_box = toga.Box(style=Pack(direction=ROW, padding=5))
         button = create_submit_button("Submit", self.submit_info)
@@ -58,30 +55,30 @@ class ExpenseTrackerQian(toga.App):
             current_user = load_json(FILE_CONSTANTS["User"])
             name_label = toga.Label(
                 "Hello " + current_user["name"] + "!",
-                style=Pack(padding=(0, 5), width=0.5, alignment='center')
+                style=Pack(padding=(0, 5), width=0.5, alignment='left')
             )
             info_box.add(name_label)
         else:
             main_label = toga.Label(
                 "Please input some basic data below : ",
-                style=Pack(padding=(0, 5), width=0.5, alignment='center')
+                style=Pack(padding=(0, 5), width=0.5, alignment='left')
             )
 
             name_label = toga.Label(
                 "Name : ",
-                style=Pack(padding=(0, 5), width=0.5, alignment='center')
+                style=Pack(padding=(0, 5), width=0.5, alignment='left')
             )
             self.name_input = toga.TextInput(style=Pack(flex=1))
 
             income_label = toga.Label(
                 "Yearly Income : ",
-                style=Pack(padding=(0, 5), width=0.5, alignment='center')
+                style=Pack(padding=(0, 5), width=0.5, alignment='left')
             )
             self.income_input = toga.TextInput(style=Pack(flex=1))
 
             company_label = toga.Label(
                 "Company : ",
-                style=Pack(padding=(0, 5), width=0.5, alignment='center')
+                style=Pack(padding=(0, 5), width=0.5, alignment='left')
             )
             self.company_input = toga.TextInput(style=Pack(flex=1))
 
@@ -108,7 +105,7 @@ class ExpenseTrackerQian(toga.App):
         main_box.add(info_box)
         main_box.add(switch_to_continue_button)
         main_box.add(switch_to_data_button)
-        main_box.style.update(alignment='center')
+        main_box.style.update(alignment='left')
         return main_box
 
     def submit_info(self, widget):
