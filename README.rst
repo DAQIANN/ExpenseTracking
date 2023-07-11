@@ -14,8 +14,21 @@ Most charges are self-classified and costs can only be viewed within certain per
 
 Screenshots of Proof-of-concept:
 
-.. image:: StartPage.png
-    :width: 600
+.. image:: images/StartPage.png
+    :width: 200
+    :alt: Starting Page
+
+.. image:: images/InputScreen.png
+    :width: 200
+    :alt: Input Expense Page
+
+.. image:: images/ViewingExpense.png
+    :width: 200
+    :alt: View Expense Range Page
+
+.. image:: images/ResultsPage.png
+    :width: 200
+    :alt: Total Expense Page
 
 Areas of Interest for Future:
 
