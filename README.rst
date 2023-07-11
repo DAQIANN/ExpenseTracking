@@ -14,7 +14,7 @@ Most charges are self-classified and costs can only be viewed within certain per
 
 Screenshots of Proof-of-concept:
 
-.. image:: /Users/danielqian/Desktop/StartPage.png
+.. image:: /src/ExpenseTracker/data/StartPage.png
     :width: 600
 
 Areas of Interest for Future:
