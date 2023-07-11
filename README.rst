@@ -12,6 +12,16 @@ Allowing for tracking of expenses
 Many standard finanicial institutions have applications to help track the charges that a person puts on their account. Unfortunately, I have found them to be rather stiff in what they allow to be tracked.
 Most charges are self-classified and costs can only be viewed within certain periods of time they deem as the right ranges. Therefore, I decided to create a more self-controlled way of seeing and inputting charges to better manage one's expenses.
 
+Screenshots of Proof-of-concept:
+
+.. image:: /Users/danielqian/Desktop/StartPage.png
+    :width: 600
+
+Areas of Interest for Future:
+
+- Adjusting the visuals of app
+- Allocating cloud servicing to app
+
 .. _`Briefcase`: https://briefcase.readthedocs.io/
 .. _`The BeeWare Project`: https://beeware.org/
 .. _`becoming a financial member of BeeWare`: https://beeware.org/contributing/membership
