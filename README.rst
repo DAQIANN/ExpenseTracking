@@ -12,20 +12,24 @@ Allowing for tracking of expenses
 Many standard finanicial institutions have applications to help track the charges that a person puts on their account. Unfortunately, I have found them to be rather stiff in what they allow to be tracked.
 Most charges are self-classified and costs can only be viewed within certain periods of time they deem as the right ranges. Therefore, I decided to create a more self-controlled way of seeing and inputting charges to better manage one's expenses.
 
-Screenshots of Proof-of-concept:
+Screenshots of Proof-of-Concept:
 
+1. Starting Page for Users
 .. image:: images/StartPage.png
     :width: 200
     :alt: Starting Page
 
+2. Input Expense Page
 .. image:: images/InputScreen.png
     :width: 200
     :alt: Input Expense Page
 
+3. View Expense Range Page
 .. image:: images/ViewingExpense.png
     :width: 200
     :alt: View Expense Range Page
 
+4. Total Expense Page
 .. image:: images/ResultsPage.png
     :width: 200
     :alt: Total Expense Page
